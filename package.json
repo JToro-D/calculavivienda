@@ -1,0 +1,12 @@
+{
+  "name": "calculavivienda",
+  "version": "0.1.0",
+  "description": "Simulador hipotecario neutral para Colombia",
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve src",
+    "test": "node --experimental-vm-modules src/utils/formatters.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
