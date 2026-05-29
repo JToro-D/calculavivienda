@@ -73,7 +73,7 @@ import { formatCOP, formatMonths }      from './utils/formatters.js';
  * Obtener en: https://formspree.io → crear formulario → copiar endpoint.
  * Ejemplo: 'https://formspree.io/f/xpwzabcd'
  */
-const FORMSPREE_ENDPOINT = '';  // ← PEGAR AQUÍ
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xykvvjya';  // ← PEGAR AQUÍ
 
 /**
  * Registro de módulos. Cambiar active a false para desactivar sin borrar código.

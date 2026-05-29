@@ -370,7 +370,7 @@ export function initLeadForm(container, initialState = {}) {
            <strong>Configuración pendiente:</strong> Para activar el formulario, crea
            una cuenta en <a href="https://formspree.io" target="_blank">formspree.io</a>
            y pasa el endpoint al inicializar:<br>
-           <code>initLeadForm(container, { formspreeEndpoint: 'https://formspree.io/f/XXXX' })</code>
+           <code>initLeadForm(container, { formspreeEndpoint: 'https://formspree.io/f/xykvvjya' })</code>
          </div>`
       : '';
 
