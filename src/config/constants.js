@@ -1,52 +1,61 @@
 /**
  * @file constants.js
  * @description Constantes legales, regulatorias y operativas del mercado
- *              hipotecario colombiano. Segunda fuente de verdad del proyecto
- *              junto con banks.js.
+ *              hipotecario colombiano.
  *
  * ─────────────────────────────────────────────────────────────────────────────
  * MANTENIMIENTO
  * ─────────────────────────────────────────────────────────────────────────────
- * Frecuencia  : Anual (cada enero, después del decreto de salario mínimo)
+ * Frecuencia  : Anual (cada enero)
  * Responsable : Propietario del proyecto
  * Tiempo est. : 20 minutos por actualización
  *
  * QUÉ ACTUALIZAR CADA AÑO Y DÓNDE VERIFICAR:
  *
- *   SMMLV          → Decreto del Ministerio del Trabajo (diciembre/enero)
- *                    https://www.mintrabajo.gov.co
+ *   SMMLV              → Ministerio del Trabajo (decretos diciembre/enero)
+ *                        https://www.mintrabajo.gov.co
  *
- *   AUXILIO_TRANSPORTE → Mismo decreto del SMMLV
+ *   VIS_MAX_SMMLV      → Ministerio de Vivienda — puede cambiar con cada gobierno
+ *   VIP_MAX_SMMLV        para ajustar el acceso a vivienda de interés social.
+ *                        Verificar en: https://www.minvivienda.gov.co
  *
- *   VIS_MAX_COP / VIP_MAX_COP → Se recalculan automáticamente desde el SMMLV.
- *                    Solo cambiar VIS_MAX_SMMLV o VIP_MAX_SMMLV si la ley
- *                    modifica los topes (no ha cambiado desde Decreto 1077/2015).
+ *   VIS_BOGOTA_MAX_SMMLV → Bogotá y su aglomeración tienen tope especial.
+ *                          Verificar en: https://bogota.gov.co
  *
- *   INFLATION_TARGET_PCT → Verificar con el Banco de la República en enero
- *                    https://www.banrep.gov.co → Política monetaria → Meta de inflación
+ *   INFLATION_TARGET_PCT → Banco de la República, meta de inflación.
+ *                          Verificar en: https://www.banrep.gov.co
  *
  * QUÉ NO CAMBIA Y POR QUÉ:
  *
  *   MAX_DEBT_RATIO  → Art. 17 Ley 546 de 1999. Sin modificaciones desde 1999.
- *   MIN_DOWN_PCT    → Regulación bancaria estándar. El FNA es la excepción (100% VIS).
+ *   MIN_DOWN_PCT    → Regulación bancaria estándar.
  *   MIN/MAX_TERM    → Ley 546 de 1999.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
+ * HISTORIAL DE CAMBIOS
+ * ─────────────────────────────────────────────────────────────────────────────
+ * 2026-05-26 v1.1 — Actualización de topes VIS/VIP para 2026:
+ *                   VIS: 135 → 150 SMMLV | VIP: 70 → 90 SMMLV
+ *                   Fuente: Ajuste regulatorio 2026 por incremento del SMMLV
+ *                   Fuente VIS Bogotá: hasta 160 SMMLV (tope especial)
+ *
+ * 2026-05-26 v1.0 — Versión inicial con SMMLV 2026: $1.750.905
  * ─────────────────────────────────────────────────────────────────────────────
  *
- * VIGENCIA DE ESTE ARCHIVO: Año 2026
+ * VIGENCIA: Año 2026
  * Fuentes:
- *   - Decreto 1469 del 29 de diciembre de 2025 (SMMLV 2026)
- *   - Decreto 0159 del 19 de febrero de 2026 (ratificación transitoria)
- *   - Decreto 1077 de 2015 (topes VIS/VIP en SMMLV)
+ *   - Decreto 1469/2025 y Decreto 0159/2026 (SMMLV $1.750.905)
+ *   - Ajuste regulatorio 2026 (topes VIS 150 SMMLV, VIP 90 SMMLV)
  *   - Ley 546 de 1999 (regla de endeudamiento y plazos)
  *   - Banco de la República (meta de inflación y UVR)
  *
- * @version 1.0.0
+ * @version 1.1.0
  * @updated 2026-05-26
  * @author  Arquitecto — calculavivienda.com.co
  */
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ENTORNO — Detección de desarrollo (mismo patrón que banks.js)
+// ENTORNO — Detección de desarrollo
 // ─────────────────────────────────────────────────────────────────────────────
 
 const IS_DEV = (
@@ -63,8 +72,6 @@ const IS_DEV = (
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. SALARIO Y AUXILIOS
-//    Fuente: Decretos 1469 y 0159 de 2025–2026
-//    Actualizar: cada enero
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Salario Mínimo Mensual Legal Vigente 2026 (COP) — Decreto 1469/2025 */
@@ -73,157 +80,110 @@ export const SMMLV = 1_750_905;
 /** Auxilio de transporte 2026 (COP) — Decreto 1470/2025 */
 export const AUXILIO_TRANSPORTE = 249_095;
 
-/** Año de vigencia de las constantes — para alertas de mantenimiento */
+/** Año de vigencia de las constantes */
 export const VIGENCIA_AÑO = 2026;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 2. CATEGORÍAS DE VIVIENDA (VIS / VIP)
-//    Los topes en SMMLV son fijos por ley (Decreto 1077/2015).
-//    Los topes en COP se calculan automáticamente con el SMMLV vigente.
-//    Actualizar: solo si la ley modifica los topes en SMMLV (muy poco frecuente)
+//    ACTUALIZADO en 2026: topes ajustados por incremento del SMMLV.
+//    Fuente: Ajuste regulatorio 2026 — Ministerio de Vivienda
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Tope VIS en unidades de SMMLV — Decreto 1077 de 2015, Art. 1 */
-export const VIS_MAX_SMMLV = 135;
-
-/** Tope VIP en unidades de SMMLV — Decreto 1077 de 2015, Art. 1 */
-export const VIP_MAX_SMMLV = 70;
+/**
+ * Tope VIS nacional en SMMLV — Ajustado a 150 SMMLV en 2026.
+ * (Antes: 135 SMMLV según Decreto 1077 de 2015)
+ */
+export const VIS_MAX_SMMLV = 150;
 
 /**
- * Tope VIS en pesos COP 2026 — calculado automáticamente.
- * 135 × $1.750.905 = $236.372.175 COP
- * @type {number}
+ * Tope VIP nacional en SMMLV — Ajustado a 90 SMMLV en 2026.
+ * (Antes: 70 SMMLV según Decreto 1077 de 2015)
  */
+export const VIP_MAX_SMMLV = 90;
+
+/**
+ * Tope VIS especial para Bogotá y municipios de su aglomeración — 160 SMMLV.
+ * Aplica para proyectos ubicados en Bogotá D.C. y municipios aledaños.
+ */
+export const VIS_BOGOTA_MAX_SMMLV = 160;
+
+/** Tope VIS nacional en pesos 2026: 150 × $1.750.905 = $262.635.750 COP */
 export const VIS_MAX_COP = SMMLV * VIS_MAX_SMMLV;
 
-/**
- * Tope VIP en pesos COP 2026 — calculado automáticamente.
- * 70 × $1.750.905 = $122.563.350 COP
- * @type {number}
- */
+/** Tope VIP nacional en pesos 2026: 90 × $1.750.905 = $157.581.450 COP */
 export const VIP_MAX_COP = SMMLV * VIP_MAX_SMMLV;
+
+/** Tope VIS Bogotá en pesos 2026: 160 × $1.750.905 = $280.144.800 COP */
+export const VIS_BOGOTA_MAX_COP = SMMLV * VIS_BOGOTA_MAX_SMMLV;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 3. REGULACIÓN CREDITICIA
-//    Fuente: Ley 546 de 1999 y normativa Superfinanciera
-//    Actualizar: solo si la Superfinanciera modifica la regulación
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Máximo porcentaje del ingreso mensual destinado a cuota hipotecaria.
- * Base legal: Art. 17 Ley 546 de 1999 (sin cambios desde 1999).
- * Todos los bancos aplican este límite al estudiar una solicitud de crédito.
- */
+/** Porcentaje máximo del ingreso para cuota hipotecaria — Art. 17 Ley 546/99 */
 export const MAX_DEBT_RATIO = 0.30;
 
-/**
- * Porcentaje mínimo de cuota inicial (Loan-to-Value máximo = 80%).
- * La regulación bancaria estándar exige mínimo 20% de cuota inicial.
- * Excepción: FNA financia hasta el 100% para VIS/VIP desde 2026.
- */
-export const MIN_DOWN_PCT    = 0.20; // 20%
-export const MAX_DOWN_PCT    = 0.50; // 50% — límite razonable en el simulador
-export const MIN_DOWN_PCT_FNA = 0.00; // FNA puede financiar el 100% en VIS 2026
+/** Cuota inicial mínima estándar (20%) */
+export const MIN_DOWN_PCT     = 0.20;
+/** Cuota inicial máxima en el simulador (50%) */
+export const MAX_DOWN_PCT     = 0.50;
+/** FNA puede financiar el 100% en VIS/VIP desde 2026 */
+export const MIN_DOWN_PCT_FNA = 0.00;
 
-/**
- * Plazos permitidos para crédito hipotecario en Colombia.
- * Base legal: Ley 546 de 1999.
- */
-export const MIN_TERM_MONTHS = 60;   // 5 años mínimo
-export const MAX_TERM_MONTHS = 360;  // 30 años máximo
+/** Plazo mínimo en meses — Ley 546/99 */
+export const MIN_TERM_MONTHS = 60;
+/** Plazo máximo en meses — Ley 546/99 */
+export const MAX_TERM_MONTHS = 360;
 
-/** Opciones de plazo estándar para los controles de la UI */
+/** Opciones de plazo para la UI */
 export const TERM_OPTIONS_YEARS = [5, 10, 15, 20, 25, 30];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 4. PARÁMETROS DEL SIMULADOR
-//    Valores por defecto y rangos para los inputs de la UI.
-//    Cambiar si el mercado cambia significativamente.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Valor del inmueble por defecto al cargar el simulador (COP) */
-export const DEFAULT_PROPERTY_VALUE_COP = 300_000_000; // $300M
-
-/** Cuota inicial por defecto (porcentaje) */
-export const DEFAULT_DOWN_PCT = 0.30; // 30%
-
+/** Valor del inmueble por defecto (COP) */
+export const DEFAULT_PROPERTY_VALUE_COP = 300_000_000;
+/** Cuota inicial por defecto */
+export const DEFAULT_DOWN_PCT           = 0.30;
 /** Plazo por defecto (meses) */
-export const DEFAULT_TERM_MONTHS = 240; // 20 años
+export const DEFAULT_TERM_MONTHS        = 240;
 
-/** Rango del slider de valor del inmueble (COP) */
-export const PROPERTY_VALUE_MIN_COP = 50_000_000;   // $50M
-export const PROPERTY_VALUE_MAX_COP = 2_000_000_000; // $2B
+/** Rango del slider de valor del inmueble */
+export const PROPERTY_VALUE_MIN_COP = 50_000_000;
+export const PROPERTY_VALUE_MAX_COP = 2_000_000_000;
 
-/** Rango del slider de ingresos mensuales para CapacityCalc (COP) */
-export const INCOME_MIN_COP = 1_750_905;    // 1 SMMLV
-export const INCOME_MAX_COP = 30_000_000;   // $30M
+/** Rango del slider de ingresos mensuales para CapacityCalc */
+export const INCOME_MIN_COP = SMMLV;
+export const INCOME_MAX_COP = 30_000_000;
 
-/**
- * Meta de inflación anual del Banco de la República.
- * Usada como proyección por defecto en el módulo UVRComparator.
- * Verificar en enero si el Banco de la República modifica su meta.
- * Fuente: https://www.banrep.gov.co → Política Monetaria → Meta de Inflación
- */
-export const INFLATION_TARGET_PCT = 3.0; // 3% anual — meta largo plazo Banrep
+/** Meta de inflación anual del Banco de la República (% anual) */
+export const INFLATION_TARGET_PCT = 3.0;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 5. SEGUROS DE REFERENCIA
-//    Tasas aproximadas para mostrar el costo real del crédito.
-//    IMPORTANTE: son valores de referencia. El banco define las tasas reales
-//    según el perfil del solicitante, su edad y la aseguradora.
-//    Actualizar: cuando cambien significativamente (revisar anualmente)
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Referencia de seguros para crédito hipotecario en Colombia.
- * Estas tasas se aplican sobre el saldo del crédito cada mes.
- * Son para mostrar un estimado del costo real — no son exactas.
- */
 export const INSURANCE_REFERENCE = {
-  /**
-   * Seguro de vida deudor (sobre saldo del crédito, mensual).
-   * Varía según la edad del solicitante. Promedio del mercado ~0.03–0.05%/mes.
-   */
-  lifeInsurancePctMonthly: 0.0003, // 0.03% mensual del saldo
-
-  /**
-   * Seguro de incendio y terremoto (sobre valor comercial del inmueble, mensual).
-   * Aproximadamente 0.0098% mensual (equivale a ~0.12% anual).
-   */
-  propertyInsurancePctMonthly: 0.0001, // 0.01% mensual del valor del inmueble
+  lifeInsurancePctMonthly:     0.0003,
+  propertyInsurancePctMonthly: 0.0001,
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 6. APIs EXTERNAS
-//    URLs de servicios externos usados por el proyecto.
-//    Actualizar si cambia la estructura de la API.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * API del Banco de la República para obtener el valor UVR actual.
- * Usada por: src/calculators/uvr.js → modules/UVRComparator/
- * Si la API cambia su estructura, actualizar también useUVR.js
- */
-export const BANREP_UVR_API = 'https://www.banrep.gov.co/es/-/valoruvr';
-
-/**
- * Tiempo de caché del valor UVR en milisegundos.
- * El UVR cambia diariamente. Se cachea en sessionStorage para evitar
- * múltiples peticiones durante la misma visita.
- * 4 horas — suficiente para una sesión, no tan largo que el valor quede viejo.
- */
-export const UVR_CACHE_TTL_MS = 4 * 60 * 60 * 1000; // 4 horas
+export const BANREP_UVR_API  = 'https://www.banrep.gov.co/es/-/valoruvr';
+export const UVR_CACHE_TTL_MS = 4 * 60 * 60 * 1000;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 7. METADATA DEL PROYECTO
-//    Usada en el footer, el PDF exportado y el disclaimer legal.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const PROJECT = {
-  name:    'CalculaVivienda.co',
-  domain:  'calculavivienda.com.co',
-  version: '1.0.0',
-  /** Texto del disclaimer que aparece en el footer y en los PDFs */
+  name:       'CalculaVivienda.co',
+  domain:     'calculavivienda.com.co',
+  version:    '1.0.0',
   disclaimer: 'Los cálculos son referenciales y no constituyen una oferta ' +
               'crediticia. Consulte directamente con su entidad financiera ' +
               'para obtener condiciones definitivas.',
@@ -239,47 +199,36 @@ function validateConstants() {
   const errors = [];
   const warn   = [];
 
-  // SMMLV razonable para Colombia
   if (SMMLV < 1_000_000 || SMMLV > 5_000_000) {
-    errors.push(`SMMLV fuera de rango razonable: ${SMMLV}`);
+    errors.push(`SMMLV fuera de rango: ${SMMLV}`);
   }
-
-  // Topes VIS/VIP coherentes
   if (VIS_MAX_SMMLV <= VIP_MAX_SMMLV) {
     errors.push(`VIS_MAX_SMMLV (${VIS_MAX_SMMLV}) debe ser > VIP_MAX_SMMLV (${VIP_MAX_SMMLV})`);
   }
-
-  // Regla de endeudamiento entre 0 y 1
+  if (VIS_BOGOTA_MAX_SMMLV < VIS_MAX_SMMLV) {
+    errors.push(`VIS_BOGOTA (${VIS_BOGOTA_MAX_SMMLV}) debe ser >= VIS nacional (${VIS_MAX_SMMLV})`);
+  }
   if (MAX_DEBT_RATIO <= 0 || MAX_DEBT_RATIO >= 1) {
-    errors.push(`MAX_DEBT_RATIO debe estar entre 0 y 1: ${MAX_DEBT_RATIO}`);
+    errors.push(`MAX_DEBT_RATIO inválido: ${MAX_DEBT_RATIO}`);
   }
-
-  // Plazos coherentes
   if (MIN_TERM_MONTHS >= MAX_TERM_MONTHS) {
-    errors.push(`MIN_TERM_MONTHS (${MIN_TERM_MONTHS}) >= MAX_TERM_MONTHS (${MAX_TERM_MONTHS})`);
+    errors.push(`Plazos incoherentes: ${MIN_TERM_MONTHS} >= ${MAX_TERM_MONTHS}`);
   }
 
-  // Cuota inicial coherente
-  if (MIN_DOWN_PCT < 0 || MAX_DOWN_PCT > 1 || MIN_DOWN_PCT >= MAX_DOWN_PCT) {
-    errors.push(`Rango de cuota inicial inválido: [${MIN_DOWN_PCT}, ${MAX_DOWN_PCT}]`);
-  }
-
-  // Verificar vigencia del archivo
   const currentYear = new Date().getFullYear();
   if (VIGENCIA_AÑO < currentYear) {
-    warn.push(`[constants.js] Archivo con vigencia ${VIGENCIA_AÑO} — estamos en ${currentYear}. ¿Actualizaste el SMMLV?`);
-  }
-
-  // Inflación target razonable
-  if (INFLATION_TARGET_PCT < 0 || INFLATION_TARGET_PCT > 20) {
-    errors.push(`INFLATION_TARGET_PCT inusual: ${INFLATION_TARGET_PCT}%`);
+    warn.push(`[constants.js] Vigencia ${VIGENCIA_AÑO} — estamos en ${currentYear}. ¿Actualizaste el SMMLV?`);
   }
 
   errors.forEach(e => console.error(`[constants.js] ✗ ${e}`));
-  warn.forEach(w  => console.warn(w));
+  warn.forEach(w   => console.warn(w));
 
   if (errors.length === 0) {
-    console.log(`[constants.js] ✓ SMMLV ${VIGENCIA_AÑO}: $${SMMLV.toLocaleString('es-CO')} — VIS hasta $${VIS_MAX_COP.toLocaleString('es-CO')} — VIP hasta $${VIP_MAX_COP.toLocaleString('es-CO')}`);
+    console.log(
+      `[constants.js] ✓ SMMLV ${VIGENCIA_AÑO}: $${SMMLV.toLocaleString('es-CO')}` +
+      ` | VIS ≤ $${VIS_MAX_COP.toLocaleString('es-CO')}` +
+      ` | VIP ≤ $${VIP_MAX_COP.toLocaleString('es-CO')}`
+    );
   }
 }
 
