@@ -1,15 +1,148 @@
-/* theme.css — Variables CSS globales — PENDIENTE DE DESARROLLO */
+/* ═══════════════════════════════════════════════════════════════════════════
+   theme.css — Design tokens de CalculaVivienda.co
+   Fuente única de verdad. No usar hex directamente en otros archivos CSS.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 :root {
-  --color-primary:    #006241;
-  --color-secondary:  #0A2540;
-  --color-accent:     #F5A623;
-  --color-bg:         #F7F8FA;
-  --color-surface:    #FFFFFF;
-  --color-border:     #E5E7EB;
-  --color-text:       #111827;
-  --color-text-muted: #6B7280;
-  --font-sans:        'DM Sans', system-ui, sans-serif;
-  --font-mono:        'IBM Plex Mono', monospace;
-  --radius-md:        8px;
-  --radius-lg:        12px;
+  /* ── Paleta principal ──────────────────────────────────────────────────── */
+  --green:        #006241;
+  --green-700:    #004d33;
+  --green-500:    #007a52;
+  --green-50:     #e6f0eb;
+
+  --navy:         #0A2540;
+  --navy-700:     #081d33;
+  --navy-500:     #0e3257;
+  --navy-50:      #eef3f9;
+
+  --gold:         #F5A623;
+  --gold-700:     #c4851a;
+  --gold-soft:    #fbe4bb;
+  --gold-50:      #fdf5e8;
+
+  /* ── Semánticos de superficie ─────────────────────────────────────────── */
+  --bg:           #F4F6F5;
+  --bg-alt:       #ffffff;
+  --card:         #ffffff;
+
+  /* ── Semánticos de texto ──────────────────────────────────────────────── */
+  --ink:          #0A2540;
+  --ink-soft:     #43586b;
+  --ink-faint:    #7c8c99;
+
+  /* ── Bordes ───────────────────────────────────────────────────────────── */
+  --line:         #e4e9e7;
+  --line-strong:  #cfd8d4;
+
+  /* ── Feedback ────────────────────────────────────────────────────────── */
+  --danger:       #DC2626;
+  --danger-soft:  #FEF2F2;
+  --success:      #059669;
+  --success-soft: #ECFDF5;
+  --warning:      #D97706;
+  --warning-soft: #FFFBEB;
+
+  /* ── Radios ───────────────────────────────────────────────────────────── */
+  --radius:       18px;
+  --radius-sm:    12px;
+  --radius-xs:    8px;
+  --radius-full:  9999px;
+
+  /* ── Sombras ──────────────────────────────────────────────────────────── */
+  --shadow-xs:  0 1px 2px rgba(10,37,64,.04);
+  --shadow-sm:  0 1px 2px rgba(10,37,64,.06), 0 1px 3px rgba(10,37,64,.05);
+  --shadow:     0 8px 24px rgba(10,37,64,.07), 0 2px 6px rgba(10,37,64,.05);
+  --shadow-lg:  0 24px 60px rgba(10,37,64,.14), 0 6px 18px rgba(10,37,64,.08);
+  --shadow-xl:  0 40px 80px rgba(10,37,64,.20), 0 10px 30px rgba(10,37,64,.10);
+
+  /* ── Tipografía ───────────────────────────────────────────────────────── */
+  --serif:  "DM Serif Display", Georgia, serif;
+  --sans:   "DM Sans", system-ui, -apple-system, sans-serif;
+  --mono:   "IBM Plex Mono", ui-monospace, "Courier New", monospace;
+
+  /* Escala tipográfica */
+  --text-xs:   0.75rem;    /* 12px */
+  --text-sm:   0.875rem;   /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg:   1.125rem;   /* 18px */
+  --text-xl:   1.25rem;    /* 20px */
+  --text-2xl:  1.5rem;     /* 24px */
+  --text-3xl:  1.875rem;   /* 30px */
+  --text-4xl:  2.25rem;    /* 36px */
+  --text-5xl:  3rem;       /* 48px */
+
+  /* Pesos */
+  --weight-normal:  400;
+  --weight-medium:  500;
+  --weight-semi:    600;
+  --weight-bold:    700;
+
+  /* ── Layout ───────────────────────────────────────────────────────────── */
+  --maxw:       1180px;
+  --maxw-md:    720px;
+  --nav-height: 64px;
+
+  /* ── Espaciado (escala 4px) ───────────────────────────────────────────── */
+  --sp-1:  0.25rem;   /*  4px */
+  --sp-2:  0.5rem;    /*  8px */
+  --sp-3:  0.75rem;   /* 12px */
+  --sp-4:  1rem;      /* 16px */
+  --sp-5:  1.25rem;   /* 20px */
+  --sp-6:  1.5rem;    /* 24px */
+  --sp-8:  2rem;      /* 32px */
+  --sp-10: 2.5rem;    /* 40px */
+  --sp-12: 3rem;      /* 48px */
+  --sp-16: 4rem;      /* 64px */
+  --sp-20: 5rem;      /* 80px */
+
+  /* ── Transiciones ─────────────────────────────────────────────────────── */
+  --ease-out:  cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-in:   cubic-bezier(0.4, 0.0, 1, 1);
+  --ease-both: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --t-fast:    150ms var(--ease-out);
+  --t-base:    200ms var(--ease-out);
+  --t-slow:    300ms var(--ease-both);
+
+  /* ── z-index scale ────────────────────────────────────────────────────── */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-sticky:  40;
+  --z-nav:     100;
+  --z-overlay: 200;
+  --z-modal:   300;
+  --z-toast:   400;
+}
+
+/* Reduced motion — respetar preferencia del sistema */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ALIASES PARA MÓDULOS JS
+   Los módulos BankComparator, AmortizationTable, etc. usan nombres de
+   variables distintos al sistema de diseño del frontend. Estos aliases
+   los mapean sin tocar el resto del tema.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* Color */
+  --color-primary:    var(--green);
+  --color-secondary:  var(--navy);
+  --color-bg:         var(--bg);
+  --color-surface:    var(--bg-alt);
+  --color-border:     var(--line);
+  --color-text:       var(--ink);
+  --color-text-muted: var(--ink-soft);
+
+  /* Tipografía */
+  --font-sans:  var(--sans);
+  --font-mono:  var(--mono);
+
+  /* Radios — módulos usan --radius-md (8px) y --radius-lg (12px) */
+  --radius-md:  var(--radius-xs);   /* 8px  */
+  --radius-lg:  var(--radius-sm);   /* 12px */
 }

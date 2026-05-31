@@ -3,14 +3,501 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Simulador hipotecario neutral e independiente para Colombia. Compara tasas de todos los bancos, genera tu tabla de amortización y descárgala en PDF. Gratis." />
-  <title>CalculaVivienda.co — Simulador hipotecario Colombia</title>
+
+  <!-- SEO primario -->
+  <title>Simulador Crédito Hipotecario Colombia 2026 — CalculaVivienda.co</title>
+  <meta name="description" content="Simula tu crédito hipotecario en Colombia. Compara los 7 bancos principales, descarga la tabla de amortización en PDF y calcula cuánto puedes pedir según tus ingresos. Gratis y sin registro." />
+  <link rel="canonical" href="https://calculavivienda.com.co/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title"       content="Simulador Hipotecario Colombia — Compara todos los bancos" />
+  <meta property="og:description" content="La única herramienta neutral que compara los 7 bancos, genera tabla de amortización y calcula tu capacidad de crédito. Gratis." />
+  <meta property="og:image"       content="https://calculavivienda.com.co/og-image.png" />
+  <meta property="og:url"         content="https://calculavivienda.com.co/" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:locale"      content="es_CO" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:title" content="Simulador Hipotecario Colombia" />
+  <meta name="twitter:image" content="https://calculavivienda.com.co/og-image.png" />
+
+  <!-- Geo -->
+  <meta name="geo.region"    content="CO" />
+  <meta name="geo.placename" content="Colombia" />
+  <meta name="language"      content="es-CO" />
+  <meta name="theme-color"   content="#006241" />
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "CalculaVivienda.co",
+    "url": "https://calculavivienda.com.co",
+    "description": "Simulador hipotecario neutral e independiente para Colombia",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "COP" },
+    "inLanguage": "es-CO",
+    "areaServed": { "@type": "Country", "name": "Colombia" }
+  }
+  </script>
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
   <link rel="stylesheet" href="./styles/theme.css" />
   <link rel="stylesheet" href="./styles/global.css" />
-  <!-- PENDIENTE: favicon, og:image, schema markup SEO -->
+  <link rel="stylesheet" href="./styles/components/navbar.css" />
+  <link rel="stylesheet" href="./styles/components/hero.css" />
+  <link rel="stylesheet" href="./styles/components/buttons.css" />
+  <link rel="stylesheet" href="./styles/components/cards.css" />
+  <link rel="stylesheet" href="./styles/components/forms.css" />
+  <!-- Nota: los módulos inyectan su propio CSS (bcp-*, amt-*, cap-*, etc.) -->
+
+  <!-- jsPDF — requerido para descarga PDF en AmortizationTable -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+    defer
+  ></script>
+
+  <!-- Favicon inline SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23006241'/><path d='M7 17l9-9 9 9v8H21v-6h-4v6H7z' fill='white'/></svg>" />
 </head>
 <body>
-  <div id="app"><!-- Módulos montados por app.js --></div>
-  <script type="module" src="./app.js"></script>
+
+<!-- ══════════════════════════════════════════════════════════
+     SKIP LINK
+════════════════════════════════════════════════════════════ -->
+<a href="#main-content" class="skip-link">Ir al contenido principal</a>
+
+<!-- ══════════════════════════════════════════════════════════
+     NAVBAR — glassmorphism sticky
+════════════════════════════════════════════════════════════ -->
+<nav class="nav" role="navigation" aria-label="Navegación principal">
+  <div class="nav__inner">
+
+    <a href="#home" class="nav__logo" aria-label="CalculaVivienda.co — Inicio">
+      <div class="nav__logo-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      CalculaVivienda<span class="nav__logo-dot">.co</span>
+    </a>
+
+    <ul class="nav__links" role="list">
+      <li><a href="#home"         class="nav__link nav__link--active" aria-current="page">Inicio</a></li>
+      <li><a href="#comparar"     class="nav__link">Comparar bancos</a></li>
+      <li><a href="#amortizacion" class="nav__link">Amortización</a></li>
+      <li><a href="#capacidad"    class="nav__link">Capacidad</a></li>
+      <li><a href="#abonos"       class="nav__link">Abonos</a></li>
+      <li><a href="#uvr"          class="nav__link">UVR</a></li>
+      <li><a href="#subsidios"    class="nav__link">Subsidios</a></li>
+    </ul>
+
+    <a href="#asesoria" class="nav__cta">Asesoría gratis</a>
+
+    <button class="nav__toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-mobile">
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Menú móvil -->
+<nav id="nav-mobile" class="nav__mobile" aria-label="Menú móvil">
+  <a href="#home"         class="nav__mobile-link nav__mobile-link--active">🏠 Inicio</a>
+  <a href="#comparar"     class="nav__mobile-link">🏦 Comparar bancos</a>
+  <a href="#amortizacion" class="nav__mobile-link">📊 Tabla de amortización</a>
+  <a href="#capacidad"    class="nav__mobile-link">💰 Capacidad de endeudamiento</a>
+  <a href="#abonos"       class="nav__mobile-link">⚡ Abonos extraordinarios</a>
+  <a href="#uvr"          class="nav__mobile-link">📈 Pesos vs UVR</a>
+  <a href="#subsidios"    class="nav__mobile-link">🏠 Subsidios VIS/VIP</a>
+  <a href="#asesoria"     class="nav__mobile-cta">Asesoría gratuita →</a>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     CONTENIDO PRINCIPAL — el router muestra/oculta .page
+════════════════════════════════════════════════════════════ -->
+<div id="main-content" style="padding-top:var(--nav-height)">
+
+  <!-- ════════════════════════════════════
+       PÁGINA: HOME / SIMULADOR PRINCIPAL
+  ═══════════════════════════════════════ -->
+  <div id="page-home" class="page page--active" role="main">
+
+    <!-- Hero: split panel -->
+    <section class="hero" aria-label="Simulador hipotecario">
+
+      <!-- Panel izquierdo: controles -->
+      <div class="hero__left">
+        <span class="hero__eyebrow">Simulador Hipotecario · Colombia 2026</span>
+
+        <h1 class="hero__title">
+          Encuentra el crédito<br/>
+          <em>ideal para tu vivienda</em>
+        </h1>
+
+        <p class="hero__sub">
+          Compara tasas de 7 bancos, genera tu tabla de amortización completa
+          y descárgala en PDF. Sin sesgos. Sin ventas. 100% gratis.
+        </p>
+
+        <!-- Campo: valor del inmueble -->
+        <div class="sim__field">
+          <div class="sim__field-header">
+            <span class="sim__field-label">Valor del inmueble</span>
+            <span class="sim__field-value" id="sim-property-display" aria-live="polite">$300.000.000</span>
+          </div>
+          <input
+            type="range"
+            id="sim-property-slider"
+            min="50000000"
+            max="2000000000"
+            step="10000000"
+            value="300000000"
+            aria-label="Valor del inmueble en pesos colombianos"
+            aria-valuemin="50000000"
+            aria-valuemax="2000000000"
+            aria-valuenow="300000000"
+          />
+          <div class="sim__range-labels">
+            <span>$50M</span>
+            <span>$2.000M</span>
+          </div>
+        </div>
+
+        <!-- Campo: cuota inicial — data-down (app.js usa [data-down]) -->
+        <div class="sim__field">
+          <div class="sim__field-header">
+            <span class="sim__field-label">Cuota inicial</span>
+          </div>
+          <div class="sim__btn-group" role="group" aria-label="Porcentaje de cuota inicial">
+            <button class="sim__btn-option" data-down="0.20">20%</button>
+            <button class="sim__btn-option" data-down="0.25">25%</button>
+            <button class="sim__btn-option active" data-down="0.30">30%</button>
+            <button class="sim__btn-option" data-down="0.35">35%</button>
+            <button class="sim__btn-option" data-down="0.40">40%</button>
+            <button class="sim__btn-option" data-down="0.50">50%</button>
+          </div>
+        </div>
+
+        <!-- Campo: plazo — data-term (app.js usa [data-term]) -->
+        <div class="sim__field" style="margin-bottom:0">
+          <div class="sim__field-header">
+            <span class="sim__field-label">Plazo del crédito</span>
+          </div>
+          <div class="sim__btn-group" role="group" aria-label="Plazo del crédito en meses">
+            <button class="sim__btn-option" data-term="60">5 años</button>
+            <button class="sim__btn-option" data-term="120">10 años</button>
+            <button class="sim__btn-option" data-term="180">15 años</button>
+            <button class="sim__btn-option active" data-term="240">20 años</button>
+            <button class="sim__btn-option" data-term="300">25 años</button>
+            <button class="sim__btn-option" data-term="360">30 años</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel derecho: resultados live -->
+      <div class="hero__right" role="region" aria-label="Resultados en tiempo real" aria-live="polite">
+
+        <div class="hero__results-label">
+          <span class="hero__results-dot" aria-hidden="true"></span>
+          Resultados en tiempo real
+        </div>
+
+        <div id="hero-housing-badge" class="hero__housing-badge hero__housing-badge--NoVIS">
+          ● Vivienda No VIS
+        </div>
+
+        <div class="hero__metric-primary">
+          <p class="hero__metric-label">Cuota mensual estimada</p>
+          <div class="hero__metric-amount" id="hero-payment">—</div>
+          <p class="hero__metric-label" style="margin-top:8px;font-size:11px;opacity:.6">
+            <span id="hero-rate-ref">Selecciona un banco</span>
+          </p>
+        </div>
+
+        <div class="hero__metrics-grid">
+          <div class="hero__metric-card">
+            <p class="hero__metric-card-label">Crédito solicitado</p>
+            <p class="hero__metric-card-value" id="hero-principal">—</p>
+          </div>
+          <div class="hero__metric-card">
+            <p class="hero__metric-card-label">Cuota inicial</p>
+            <p class="hero__metric-card-value" id="hero-downpayment">—</p>
+          </div>
+          <div class="hero__metric-card">
+            <p class="hero__metric-card-label">Total intereses</p>
+            <p class="hero__metric-card-value hero__metric-card-value--red" id="hero-interest">—</p>
+          </div>
+          <div class="hero__metric-card">
+            <p class="hero__metric-card-label">Total pagado</p>
+            <p class="hero__metric-card-value" id="hero-total">—</p>
+          </div>
+        </div>
+
+        <div class="hero__cta-group">
+          <a href="#comparar" class="hero__cta-primary">Ver todos los bancos</a>
+          <a href="#amortizacion" class="hero__cta-secondary">Descargar tabla PDF</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats debajo del hero -->
+    <div style="max-width:var(--maxw);margin:0 auto;padding:var(--sp-12) var(--sp-6);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--sp-6)">
+      <div>
+        <p style="font-family:var(--mono);font-size:var(--text-4xl);font-weight:700;color:var(--green);line-height:1;margin-bottom:var(--sp-2)">7</p>
+        <strong style="font-family:var(--serif);font-size:var(--text-base);color:var(--ink);display:block;margin-bottom:var(--sp-1)">Bancos comparados</strong>
+        <p style="font-size:var(--text-sm);color:var(--ink-soft);line-height:1.5">FNA, Bancolombia, Davivienda, AV Villas, Bogotá, BBVA, Itaú</p>
+      </div>
+      <div>
+        <p style="font-family:var(--mono);font-size:var(--text-4xl);font-weight:700;color:var(--green);line-height:1;margin-bottom:var(--sp-2)">360</p>
+        <strong style="font-family:var(--serif);font-size:var(--text-base);color:var(--ink);display:block;margin-bottom:var(--sp-1)">Cuotas en PDF</strong>
+        <p style="font-size:var(--text-sm);color:var(--ink-soft);line-height:1.5">Tabla completa mes a mes, descargable al instante</p>
+      </div>
+      <div>
+        <p style="font-family:var(--mono);font-size:var(--text-4xl);font-weight:700;color:var(--green);line-height:1;margin-bottom:var(--sp-2)">0s</p>
+        <strong style="font-family:var(--serif);font-size:var(--text-base);color:var(--ink);display:block;margin-bottom:var(--sp-1)">Tiempo de registro</strong>
+        <p style="font-size:var(--text-sm);color:var(--ink-soft);line-height:1.5">Sin cuenta, sin datos personales, completamente anónimo</p>
+      </div>
+      <div>
+        <p style="font-family:var(--mono);font-size:var(--text-4xl);font-weight:700;color:var(--green);line-height:1;margin-bottom:var(--sp-2)">2026</p>
+        <strong style="font-family:var(--serif);font-size:var(--text-base);color:var(--ink);display:block;margin-bottom:var(--sp-1)">Datos actualizados</strong>
+        <p style="font-size:var(--text-sm);color:var(--ink-soft);line-height:1.5">SMMLV, topes VIS/VIP y tasas — Superfinanciera mayo 2026</p>
+      </div>
+    </div>
+  </div><!-- /page-home -->
+
+
+  <!-- ════════════════════════════════════
+       PÁGINA: COMPARADOR DE BANCOS
+  ═══════════════════════════════════════ -->
+  <div id="page-comparar" class="page" role="main">
+    <div class="page-header">
+      <span class="eyebrow">Tasas de referencia · Superfinanciera · Mayo 2026</span>
+      <h1>Comparador de bancos</h1>
+      <p>Compara tasas, cuotas y costos totales de los 7 bancos hipotecarios de Colombia. Haz clic en un banco para seleccionarlo — actualiza la tabla de amortización automáticamente.</p>
+    </div>
+    <div style="max-width:var(--maxw);margin:0 auto;padding:0 var(--sp-6) var(--sp-16)">
+      <p class="disclaimer">
+        Tasas verificadas al 26 de mayo de 2026 · Superfinanciera Colombia. Los valores son referenciales y no constituyen una oferta crediticia.
+      </p>
+      <div class="module-card" style="padding:0;overflow:hidden">
+        <div id="bank-comparator"></div>
+      </div>
+    </div>
+  </div><!-- /page-comparar -->
+
+
+  <!-- ════════════════════════════════════
+       PÁGINA: TABLA DE AMORTIZACIÓN
+  ═══════════════════════════════════════ -->
+  <div id="page-amortizacion" class="page" role="main">
+    <div class="page-header">
+      <span class="eyebrow">Sistema francés · Cuota fija</span>
+      <h1>Tabla de amortización</h1>
+      <p>Visualiza cada cuota mes a mes o año a año. Descarga la tabla completa (hasta 360 cuotas) en PDF con un solo clic.</p>
+    </div>
+    <div style="max-width:var(--maxw);margin:0 auto;padding:0 var(--sp-6) var(--sp-16)">
+      <p class="disclaimer">
+        Cálculo según el sistema francés (cuota fija en pesos). La última cuota puede diferir levemente por redondeo de decimales.
+      </p>
+      <div class="module-card" style="padding:0;overflow:hidden">
+        <div id="amortization-table"></div>
+      </div>
+    </div>
+  </div><!-- /page-amortizacion -->
+
+
+  <!-- ════════════════════════════════════
+       PÁGINA: CAPACIDAD DE ENDEUDAMIENTO
+  ═══════════════════════════════════════ -->
+  <div id="page-capacidad" class="page" role="main">
+    <div class="page-header">
+      <span class="eyebrow">Regla del 30% · Ley 546/99</span>
+      <h1>¿Cuánto puedo pedir prestado?</h1>
+      <p>Calcula tu capacidad de endeudamiento según tu ingreso mensual. Descubre el valor máximo del inmueble que puedes financiar o si calificas para un crédito específico.</p>
+    </div>
+    <div style="max-width:var(--maxw);margin:0 auto;padding:0 var(--sp-6) var(--sp-16)">
+      <div class="info-card info-card--navy" style="margin-bottom:var(--sp-5)">
+        <span class="info-card__icon">⚖️</span>
+        <div><strong>Regla del 30%</strong> — La Superfinanciera establece que la cuota hipotecaria no puede superar el 30% de tus ingresos mensuales (Art. 17, Ley 546 de 1999).</div>
+      </div>
+      <div class="module-card">
+        <div id="capacity-calc"></div>
+      </div>
+    </div>
+  </div><!-- /page-capacidad -->
+
+
+  <!-- ════════════════════════════════════
+       PÁGINA: ABONOS EXTRAORDINARIOS
+  ═══════════════════════════════════════ -->
+  <div id="page-abonos" class="page" role="main">
+    <div class="page-header">
+      <span class="eyebrow">Ley 546/99 · Abonos a capital</span>
+      <h1>Simulador de abonos extraordinarios</h1>
+      <p>Calcula cuánto ahorras en intereses y tiempo si realizas pagos extraordinarios. Elige entre reducir el plazo o disminuir la cuota mensual.</p>
+    </div>
+    <div style="max-width:var(--maxw);margin:0 auto;padding:0 var(--sp-6) var(--sp-16)">
+      <div class="info-card info-card--navy" style="margin-bottom:var(--sp-5)">
+        <span class="info-card__icon">⚡</span>
+        <div><strong>Ley 546 de 1999</strong> — En Colombia tienes derecho a realizar abonos extraordinarios a capital en cualquier momento. El banco debe aplicarlos de inmediato y recalcular la tabla.</div>
+      </div>
+      <div class="module-card">
+        <div id="extra-payments"></div>
+      </div>
+    </div>
+  </div><!-- /page-abonos -->
+
+
+  <!-- ════════════════════════════════════
+       PÁGINA: PESOS VS UVR
+  ═══════════════════════════════════════ -->
+  <div id="page-uvr" class="page" role="main">
+    <div class="page-header">
+      <span class="eyebrow">UVR · Unidad de Valor Real</span>
+      <h1>Pesos vs UVR</h1>
+      <p>Compara un crédito en pesos (cuota fija) versus un crédito UVR (cuota indexada al IPC). Descubre en qué escenario de inflación conviene cada opción.</p>
+    </div>
+    <div style="max-width:var(--maxw);margin:0 auto;padding:0 var(--sp-6) var(--sp-16)">
+      <div class="info-card info-card--navy" style="margin-bottom:var(--sp-5)">
+        <span class="info-card__icon">📈</span>
+        <div><strong>¿Qué es la UVR?</strong> — La Unidad de Valor Real se actualiza diariamente con el IPC del DANE. Los créditos UVR tienen tasas más bajas, pero la cuota en pesos sube con la inflación.</div>
+      </div>
+      <div class="module-card" style="padding:0;overflow:hidden">
+        <div id="uvr-comparator"></div>
+      </div>
+    </div>
+  </div><!-- /page-uvr -->
+
+
+  <!-- ════════════════════════════════════
+       PÁGINA: SUBSIDIOS VIS/VIP
+  ═══════════════════════════════════════ -->
+  <div id="page-subsidios" class="page" role="main">
+    <div class="page-header">
+      <span class="eyebrow">FNA · Cajas de Compensación · 2026</span>
+      <h1>Subsidios VIS y VIP</h1>
+      <p>Descubre a qué subsidios de vivienda tienes acceso según tus ingresos y el tipo de inmueble. Vigencia 2026.</p>
+    </div>
+    <div style="max-width:var(--maxw);margin:0 auto;padding:0 var(--sp-6) var(--sp-16)">
+      <p class="disclaimer">
+        ℹ️ Desde 2026, el FNA financia hasta el <strong>100%</strong> de viviendas VIS/VIP nuevas para afiliados. <strong>Mi Casa Ya</strong> está suspendido para nuevos beneficiarios. Verifica con tu empleador y caja de compensación.
+      </p>
+      <div class="module-card">
+        <div id="subsidies"></div>
+      </div>
+    </div>
+  </div><!-- /page-subsidios -->
+
+
+  <!-- ════════════════════════════════════
+       PÁGINA: ASESORÍA GRATUITA
+  ═══════════════════════════════════════ -->
+  <div id="page-asesoria" class="page" role="main">
+    <div class="page-header">
+      <span class="eyebrow">Asesoría hipotecaria gratuita</span>
+      <h1>¿Quieres asesoría personalizada?</h1>
+      <p>Un broker hipotecario independiente te contacta sin costo. Analiza tu caso, compara opciones y te guía en todo el proceso.</p>
+    </div>
+    <div style="max-width:var(--maxw);margin:0 auto;padding:0 var(--sp-6) var(--sp-16)">
+      <!-- Beneficios -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--sp-4);margin-bottom:var(--sp-8)">
+        <div class="card card--flat" style="padding:var(--sp-4)">
+          <div style="font-size:1.5rem;margin-bottom:var(--sp-2)">🤝</div>
+          <strong style="font-size:var(--text-base);color:var(--ink);display:block;margin-bottom:var(--sp-1)">Independiente</strong>
+          <p style="font-size:var(--text-sm);color:var(--ink-soft);line-height:1.55">El broker no tiene convenio con ningún banco. Trabaja para ti.</p>
+        </div>
+        <div class="card card--flat" style="padding:var(--sp-4)">
+          <div style="font-size:1.5rem;margin-bottom:var(--sp-2)">💸</div>
+          <strong style="font-size:var(--text-base);color:var(--ink);display:block;margin-bottom:var(--sp-1)">Sin costo</strong>
+          <p style="font-size:var(--text-sm);color:var(--ink-soft);line-height:1.55">La asesoría es gratuita. El broker cobra comisión al banco si aprueba.</p>
+        </div>
+        <div class="card card--flat" style="padding:var(--sp-4)">
+          <div style="font-size:1.5rem;margin-bottom:var(--sp-2)">⚡</div>
+          <strong style="font-size:var(--text-base);color:var(--ink);display:block;margin-bottom:var(--sp-1)">Respuesta en 24h</strong>
+          <p style="font-size:var(--text-sm);color:var(--ink-soft);line-height:1.55">Te contactamos en menos de 24 horas hábiles.</p>
+        </div>
+        <div class="card card--flat" style="padding:var(--sp-4)">
+          <div style="font-size:1.5rem;margin-bottom:var(--sp-2)">🔒</div>
+          <strong style="font-size:var(--text-base);color:var(--ink);display:block;margin-bottom:var(--sp-1)">Datos protegidos</strong>
+          <p style="font-size:var(--text-sm);color:var(--ink-soft);line-height:1.55">Tus datos solo se usan para contactarte. No vendemos información.</p>
+        </div>
+      </div>
+
+      <div class="module-card" style="max-width:640px">
+        <div id="lead-form"></div>
+      </div>
+    </div>
+  </div><!-- /page-asesoria -->
+
+</div><!-- /#main-content -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════════ -->
+<footer class="footer" role="contentinfo">
+  <div class="footer__grid">
+    <div>
+      <div class="footer__brand">CalculaVivienda<span style="color:var(--gold)">.co</span></div>
+      <p class="footer__copy">
+        Simulador hipotecario neutral e independiente. No somos un banco ni tenemos convenios comerciales con ninguna entidad financiera colombiana.
+      </p>
+    </div>
+    <div>
+      <p class="footer__col-title">Herramientas</p>
+      <ul class="footer__links">
+        <li><a href="#comparar">Comparar bancos</a></li>
+        <li><a href="#amortizacion">Tabla de amortización</a></li>
+        <li><a href="#capacidad">Capacidad de endeudamiento</a></li>
+        <li><a href="#abonos">Abonos extraordinarios</a></li>
+        <li><a href="#uvr">Pesos vs UVR</a></li>
+        <li><a href="#subsidios">Subsidios VIS/VIP</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer__col-title">Legal</p>
+      <ul class="footer__links">
+        <li><a href="#">Términos de uso</a></li>
+        <li><a href="#">Política de privacidad</a></li>
+        <li><a href="#">Aviso legal</a></li>
+      </ul>
+      <p class="footer__copy" style="margin-top:1rem;font-size:0.75rem;color:rgba(255,255,255,.35)">
+        Tasas verificadas · Superfinanciera Colombia.<br/>No constituyen oferta crediticia.
+      </p>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <span>© 2026 CalculaVivienda.co — Todos los derechos reservados</span>
+    <span>SMMLV 2026: $1.750.905 · Datos: Superfinanciera</span>
+  </div>
+</footer>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     SCRIPTS
+     Orden importa: jsPDF (CDN, carga con defer en head)
+     → main.js (router + hero, inicia al DOMContentLoaded)
+     → app.js del backend (orquestador de módulos)
+════════════════════════════════════════════════════════════ -->
+
+<!-- Frontend: router + hero panel + navbar -->
+<script type="module" src="./js/main.js"></script>
+
+<!-- Backend: orquestador principal — inicializa todos los módulos -->
+<script type="module" src="./app.js"></script>
+
 </body>
 </html>

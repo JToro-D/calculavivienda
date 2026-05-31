@@ -1,0 +1,250 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   buttons.css — Sistema completo de botones con estados WCAG AA
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: 0.65rem var(--sp-5);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: var(--sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--t-fast);
+  min-height: 44px;
+  position: relative;
+  user-select: none;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Variantes ────────────────────────────────────────────────────────────── */
+.btn--primary {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+.btn--primary:hover {
+  background: var(--green-700);
+  border-color: var(--green-700);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,98,65,.3);
+}
+.btn--primary:active { transform: translateY(0); box-shadow: none; }
+
+.btn--secondary {
+  background: var(--card);
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.btn--secondary:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--green-50);
+}
+
+.btn--gold {
+  background: var(--gold);
+  color: var(--navy);
+  border-color: var(--gold);
+  font-weight: var(--weight-semi);
+}
+.btn--gold:hover {
+  background: var(--gold-700);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(245,166,35,.35);
+}
+
+.btn--navy {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+.btn--navy:hover {
+  background: var(--navy-700);
+  transform: translateY(-1px);
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--green);
+  border-color: var(--green);
+}
+.btn--outline:hover {
+  background: var(--green-50);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink-soft);
+  border-color: transparent;
+}
+.btn--ghost:hover {
+  background: rgba(10,37,64,.06);
+  color: var(--ink);
+}
+
+.btn--danger {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+.btn--danger:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+/* ── Tamaños ──────────────────────────────────────────────────────────────── */
+.btn--sm {
+  padding: 0.45rem var(--sp-3);
+  font-size: var(--text-xs);
+  border-radius: var(--radius-xs);
+  min-height: 36px;
+  gap: var(--sp-1);
+}
+.btn--lg {
+  padding: 0.85rem var(--sp-8);
+  font-size: var(--text-base);
+  border-radius: var(--radius-sm);
+  min-height: 52px;
+}
+.btn--full { width: 100%; }
+
+/* ── Estado de carga ──────────────────────────────────────────────────────── */
+.btn--loading {
+  color: transparent;
+  pointer-events: none;
+}
+.btn--loading::after {
+  content: '';
+  position: absolute;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: btn-spin 0.65s linear infinite;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+
+/* ── Iconos ───────────────────────────────────────────────────────────────── */
+.btn__icon {
+  width: 16px; height: 16px;
+  flex-shrink: 0;
+}
+.btn--lg .btn__icon { width: 18px; height: 18px; }
+
+/* ── Grupos de opciones (cuota, plazo) ────────────────────────────────────── */
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.btn-option {
+  padding: 0.5rem var(--sp-4);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-xs);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all var(--t-fast);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-option:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--green-50);
+}
+.btn-option.is-active,
+.btn-option.active,
+.btn-option[aria-pressed="true"] {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+/* ── Toggle ───────────────────────────────────────────────────────────────── */
+.toggle-group {
+  display: inline-flex;
+  background: var(--bg);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+}
+.toggle-btn {
+  padding: 0.5rem var(--sp-4);
+  border: none;
+  border-right: 1px solid var(--line-strong);
+  background: transparent;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all var(--t-fast);
+  min-height: 44px;
+}
+.toggle-btn:last-child { border-right: none; }
+.toggle-btn:hover { background: var(--green-50); color: var(--green); }
+.toggle-btn.is-active {
+  background: var(--green);
+  color: #fff;
+}
+
+/* ── Tab buttons ──────────────────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.55rem var(--sp-3);
+  border: none;
+  border-radius: calc(var(--radius-sm) - 4px);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: all var(--t-fast);
+  white-space: nowrap;
+  text-align: center;
+  min-height: 40px;
+}
+.tab-btn:hover { color: var(--ink); background: rgba(0,0,0,.04); }
+.tab-btn.is-active {
+  background: var(--card);
+  color: var(--green);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 480px) {
+  .btn-group { gap: var(--sp-1); }
+  .btn-option { font-size: var(--text-xs); padding: 0.4rem var(--sp-3); }
+}
